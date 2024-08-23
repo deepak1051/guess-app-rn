@@ -1,4 +1,11 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import React from 'react';
 import Title from '../components/ui/Title';
 import Colors from '../constants/colors';
@@ -9,7 +16,17 @@ export default function GameOverScreen({
   userNumber,
   onStartNewGame,
 }) {
-  console.log('roundNumber', roundNumber);
+  const {width, height} = useWindowDimensions();
+
+  let imageSize = 300;
+
+  if (width < 380) {
+    imageSize = 150;
+  }
+
+  if (height < 400) {
+    imageSize = 80;
+  }
 
   return (
     <View style={styles.container}>
@@ -35,18 +52,19 @@ export default function GameOverScreen({
   );
 }
 
+const deviceWidth = Dimensions.get('window').width;
+const deviceHeight = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
   container: {
-    // margin: 20,
     padding: 24,
     flex: 1,
-
     justifyContent: 'center',
     alignItems: 'center',
   },
   imageContainer: {
-    height: 300,
-    width: 300,
+    height: deviceHeight < 380 ? 150 : 300,
+    width: deviceWidth < 380 ? 150 : 300,
     borderRadius: 150,
     borderWidth: 3,
     borderColor: Colors.primary700,

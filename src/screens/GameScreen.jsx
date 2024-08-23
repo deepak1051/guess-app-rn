@@ -1,4 +1,4 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, Text, View, useWindowDimensions} from 'react-native';
 
 import {useEffect, useState} from 'react';
 import Title from '../components/ui/Title';
@@ -28,6 +28,8 @@ export default function GameScreen({userNumber, onGameOver}) {
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
 
   const [guessRounds, setGuessRounds] = useState([]);
+
+  const {width} = useWindowDimensions();
 
   useEffect(() => {
     if (currentGuess === userNumber) {
@@ -71,11 +73,8 @@ export default function GameScreen({userNumber, onGameOver}) {
     setGuessRounds(prev => [newRndNumber, ...prev]);
   };
 
-  const length = guessRounds.length;
-
-  return (
-    <View style={styles.screen}>
-      <Title>Opponent's Guess</Title>
+  let content = (
+    <>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card>
         <InstructionText>Higher or lower</InstructionText>
@@ -93,7 +92,33 @@ export default function GameScreen({userNumber, onGameOver}) {
           </View>
         </View>
       </Card>
+    </>
+  );
 
+  if (width > 500) {
+    content = (
+      <>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={() => handleNextGuess('lower')}>
+              -
+            </PrimaryButton>
+          </View>
+          <NumberContainer>{currentGuess}</NumberContainer>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={() => handleNextGuess('higher')}>
+              {/* <AntDesign name="minus" size={24} />  */}+
+            </PrimaryButton>
+          </View>
+        </View>
+      </>
+    );
+  }
+
+  return (
+    <View style={styles.screen}>
+      <Title>Opponent's Guess</Title>
+      {content}
       <View>
         {guessRounds.map((guess, index) => (
           <GuessLogItem guess={guess} roundNumber={index + 1} key={index} />
